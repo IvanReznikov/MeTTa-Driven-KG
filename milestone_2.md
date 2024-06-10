@@ -9,10 +9,15 @@ This milestone focuses on integrating Large Language Models (LLMs) for preproces
 ### Progress Made
 
 #### Data Folder
-The data folder contains a small portion of the STC graph. To run Neo4j on this data, use the following command:
+The data folder contains a small portion of the STC graph. To run Neo4j on this data, use the following instructions:
+1. config .env files same/similar to .env.example
+
+2. run container with Neo4j
 ```bash
 docker compose up
 ```
+
+3. The `smallstc` graph will be build dynamically - just wait a couple of minutes. Afterwards, you'll be able to run the graph without delay.
 
 #### Preprocessing Articles' Language
 We used an LLM to identify the languages of articles based on their titles, filling in missing language values. This preprocessing step ensures that the language data in the graph is accurate and complete.
