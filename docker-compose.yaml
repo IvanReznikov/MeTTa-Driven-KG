@@ -1,0 +1,40 @@
+version: '3'
+services:
+  neo4j:
+    image: neo4j:5.14.0-enterprise
+    container_name: neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      NEO4J_ACCEPT_LICENSE_AGREEMENT: "yes"
+      NEO4J_AUTH: ${NEO4J_AUTH}
+      NEO4J_PLUGINS: ${NEO4J_PLUGINS}
+    volumes:
+      - ./db/data:/data
+      - ./db/conf:/conf
+      - ./db/logs:/logs
+      - ./db/plugins:/plugins
+    healthcheck:
+      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "Stargate90", "RETURN 1"]
+      interval: 10s
+      timeout: 45s
+      retries: 5
+    networks:
+      - backend
+
+  pythonapp:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: kg_snet
+    ports:
+      - "9001:8501"
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    networks:
+      - backend
+
+networks:
+  backend:

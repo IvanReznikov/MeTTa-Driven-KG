@@ -1,0 +1,8 @@
+.env
+__pycache__
+
+notes
+db
+logs
+
+sessions.json
