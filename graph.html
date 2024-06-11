@@ -1,0 +1,175 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #DBDBDB;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#4508DF", "font": {"color": "#000000"}, "id": "Eldon", "label": "Eldon", "shape": "dot", "size": 20, "title": "Eldon"}, {"color": "#0878E0", "font": {"color": "#000000"}, "id": "10.1097/mlr.0b013e3181589bdc", "label": "10.1097/mlr.0b013e3181589bdc", "shape": "dot", "size": 20, "title": "10.1097/mlr.0b013e3181589bdc"}, {"color": "#BD0CDF", "font": {"color": "#000000"}, "id": "Sandra A.", "label": "Sandra A.", "shape": "dot", "size": 20, "title": "Sandra A."}, {"color": "#820CDF", "font": {"color": "#000000"}, "id": "Eric A.", "label": "Eric A.", "shape": "dot", "size": 20, "title": "Eric A."}, {"color": "#5E3DFF", "font": {"color": "#000000"}, "id": "Sung-joon", "label": "Sung-joon", "shape": "dot", "size": 20, "title": "Sung-joon"}, {"color": "#3083DC", "font": {"color": "#000000"}, "id": "10.1001/archinte.166.17.1822", "label": "10.1001/archinte.166.17.1822", "shape": "dot", "size": 20, "title": "10.1001/archinte.166.17.1822"}, {"color": "#9627BA", "font": {"color": "#000000"}, "id": "Sandra", "label": "Sandra", "shape": "dot", "size": 20, "title": "Sandra"}, {"color": "#D885FF", "font": {"color": "#000000"}, "id": "Erin E.", "label": "Erin E.", "shape": "dot", "size": 20, "title": "Erin E."}, {"color": "#6900CE", "font": {"color": "#000000"}, "id": "10.1158/1055-9965.epi-12-1356", "label": "10.1158/1055-9965.epi-12-1356", "shape": "dot", "size": 20, "title": "10.1158/1055-9965.epi-12-1356"}, {"color": "#A15BFF", "font": {"color": "#000000"}, "id": "Laura", "label": "Laura", "shape": "dot", "size": 20, "title": "Laura"}, {"color": "#6E00FC", "font": {"color": "#000000"}, "id": "Catherine M.", "label": "Catherine M.", "shape": "dot", "size": 20, "title": "Catherine M."}, {"color": "#009BDF", "font": {"color": "#000000"}, "id": "Lynne", "label": "Lynne", "shape": "dot", "size": 20, "title": "Lynne"}, {"color": "#B362F8", "font": {"color": "#000000"}, "id": "Steve", "label": "Steve", "shape": "dot", "size": 20, "title": "Steve"}, {"color": "#7730F9", "font": {"color": "#000000"}, "id": "Julia H.", "label": "Julia H.", "shape": "dot", "size": 20, "title": "Julia H."}, {"color": "#3A82F7", "font": {"color": "#000000"}, "id": "Mark", "label": "Mark", "shape": "dot", "size": 20, "title": "Mark"}, {"color": "#A850E7", "font": {"color": "#000000"}, "id": "Janet S.", "label": "Janet S.", "shape": "dot", "size": 20, "title": "Janet S."}, {"color": "#429BF5", "font": {"color": "#000000"}, "id": "Angela B.", "label": "Angela B.", "shape": "dot", "size": 20, "title": "Angela B."}, {"color": "#8E72FA", "font": {"color": "#000000"}, "id": "Sung-Joon", "label": "Sung-Joon", "shape": "dot", "size": 20, "title": "Sung-Joon"}, {"color": "#2E61F8", "font": {"color": "#000000"}, "id": "10.1111/j.1532-5415.2004.52504.x", "label": "10.1111/j.1532-5415.2004.52504.x", "shape": "dot", "size": 20, "title": "10.1111/j.1532-5415.2004.52504.x"}, {"color": "#BF6DF6", "font": {"color": "#000000"}, "id": "Janet C.", "label": "Janet C.", "shape": "dot", "size": 20, "title": "Janet C."}, {"color": "#4508DF", "font": {"color": "#000000"}, "id": "Andrew M.", "label": "Andrew M.", "shape": "dot", "size": 20, "title": "Andrew M."}, {"color": "#0878E0", "font": {"color": "#000000"}, "id": "Jodi D.", "label": "Jodi D.", "shape": "dot", "size": 20, "title": "Jodi D."}]);
+                  edges = new vis.DataSet([{"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Eldon", "label": "authored", "to": "10.1097/mlr.0b013e3181589bdc", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Sandra A.", "label": "authored", "to": "10.1097/mlr.0b013e3181589bdc", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Eldon", "label": "authored", "to": "10.1097/mlr.0b013e3181589bdc", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Eric A.", "label": "authored", "to": "10.1097/mlr.0b013e3181589bdc", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Eric A.", "label": "authored", "to": "10.1097/mlr.0b013e3181589bdc", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Sandra A.", "label": "authored", "to": "10.1097/mlr.0b013e3181589bdc", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Eldon", "label": "authored", "to": "10.1097/mlr.0b013e3181589bdc", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Sandra A.", "label": "authored", "to": "10.1097/mlr.0b013e3181589bdc", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Eldon", "label": "authored", "to": "10.1097/mlr.0b013e3181589bdc", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Eric A.", "label": "authored", "to": "10.1097/mlr.0b013e3181589bdc", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Eric A.", "label": "authored", "to": "10.1097/mlr.0b013e3181589bdc", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Sandra A.", "label": "authored", "to": "10.1097/mlr.0b013e3181589bdc", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Sung-joon", "label": "authored", "to": "10.1001/archinte.166.17.1822", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Eric A.", "label": "authored", "to": "10.1001/archinte.166.17.1822", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Sandra", "label": "authored", "to": "10.1001/archinte.166.17.1822", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Eric A.", "label": "authored", "to": "10.1001/archinte.166.17.1822", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Sung-joon", "label": "authored", "to": "10.1001/archinte.166.17.1822", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Sandra", "label": "authored", "to": "10.1001/archinte.166.17.1822", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Sung-joon", "label": "authored", "to": "10.1001/archinte.166.17.1822", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Eric A.", "label": "authored", "to": "10.1001/archinte.166.17.1822", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Sandra", "label": "authored", "to": "10.1001/archinte.166.17.1822", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Eric A.", "label": "authored", "to": "10.1001/archinte.166.17.1822", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Sung-joon", "label": "authored", "to": "10.1001/archinte.166.17.1822", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Sandra", "label": "authored", "to": "10.1001/archinte.166.17.1822", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Erin E.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Laura", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Catherine M.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Lynne", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Steve", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Julia H.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Mark", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Janet S.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Angela B.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Mark", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Steve", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Janet S.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Laura", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Julia H.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Erin E.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Catherine M.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Angela B.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Lynne", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Erin E.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Laura", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Catherine M.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Lynne", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Steve", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Julia H.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Mark", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Janet S.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Angela B.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Mark", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Steve", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Janet S.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Laura", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Julia H.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Erin E.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Catherine M.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Angela B.", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Lynne", "label": "authored", "to": "10.1158/1055-9965.epi-12-1356", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Sung-Joon", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Sung-Joon", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Janet C.", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Eric A.", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Andrew M.", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Janet C.", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Eric A.", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Andrew M.", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Jodi D.", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Jodi D.", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Sung-Joon", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Sung-Joon", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Janet C.", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Eric A.", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Andrew M.", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Janet C.", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Eric A.", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Andrew M.", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Jodi D.", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}, {"arrowStrikethrough": true, "arrows": "to", "color": "#484848", "dashes": true, "font": {"align": "horizontal", "color": "black"}, "from": "Jodi D.", "label": "authored", "to": "10.1111/j.1532-5415.2004.52504.x", "width": 2}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.2,
+            "damping": 0.09,
+            "nodeDistance": 300,
+            "springConstant": 0.05,
+            "springLength": 200
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

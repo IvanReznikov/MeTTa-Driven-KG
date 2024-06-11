@@ -6,22 +6,21 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
 
-
 class DatabaseManager:
     """Manages database connections to Neo4j."""
 
-    def __init__(self, neo4j_username, neo4j_pass,connection_uri):
+    def __init__(self, neo4j_username, neo4j_pass, connection_uri):
         """Initializes the database manager with connection configuration.
 
         Args:
             file_path: Path to the YAML file containing connection details.
         """
-      
+
         self.driver = GraphDatabase.driver(
-                connection_uri,
-                auth=basic_auth(neo4j_username, neo4j_pass),
-            )
-        
+            connection_uri,
+            auth=basic_auth(neo4j_username, neo4j_pass),
+        )
+
         try:
             with self.driver.session() as session:
                 result = session.run("RETURN 1")
@@ -71,12 +70,13 @@ class DatabaseManager:
         """
 
         with self.driver.session(database="system") as session:
-
             query = f"CREATE DATABASE {database_name} IF NOT EXISTS"
             session.run(query)
 
 
-def connect_to_custom_db(NAME_DATABASE: str, connection_uri: str , neo_user: str , neo_pass: str):
+def connect_to_custom_db(
+    NAME_DATABASE: str, connection_uri: str, neo_user: str, neo_pass: str
+):
     """Connects to a custom Neo4j database using Py2Neo.
 
     Args:
@@ -103,14 +103,18 @@ def clear_neo4j_db(graph: Graph):
     )
 
 
-def open_ssh_tunnel(config_connection, ): 
-
+def open_ssh_tunnel(
+    config_connection,
+):
     # Define the SSH tunnel configuration
     server = SSHTunnelForwarder(
         (config_connection["ssh_host"], 22),  # SSH хост и порт
         ssh_username=config_connection["ssh_username"],
         ssh_password=config_connection["ssh_password"],
-        remote_bind_address=(config_connection["neo4j_host"], config_connection["neo4j_port"])  # Адрес и порт Neo4j на удалённом сервере
+        remote_bind_address=(
+            config_connection["neo4j_host"],
+            config_connection["neo4j_port"],
+        ),  # Адрес и порт Neo4j на удалённом сервере
     )
 
     # Start the SSH tunnel
@@ -118,33 +122,35 @@ def open_ssh_tunnel(config_connection, ):
     return server
 
 
-def wrapper_verify_connection(server: DatabaseManager, database_name: str = "neo4j",  neo_username = "", neo_pass = "",connection_uri = ""):
-    
-        # If the server is successfully initialized, proceed to check if the database exists.
-        # If it does not, the database will be created.
+def wrapper_verify_connection(
+    server: DatabaseManager,
+    database_name: str = "neo4j",
+    neo_username="",
+    neo_pass="",
+    connection_uri="",
+):
+    # If the server is successfully initialized, proceed to check if the database exists.
+    # If it does not, the database will be created.
     server.create_database_if_not_exists(database_name=database_name)
 
-        # Verify the connection to the specified database to ensure it's ready for operations.
-        # if not ssh_mode:
+    # Verify the connection to the specified database to ensure it's ready for operations.
+    # if not ssh_mode:
     server.verify_connection(database_name=database_name)
-        # After operations are complete, close the server connection as a cleanup step.
+    # After operations are complete, close the server connection as a cleanup step.
     server.close()
 
-        # Establish and return a connection to the specified database using a custom method.
-        # This method also utilizes the same configuration file for connection details.
-    
-        # connection_config = read_load_file_utilities.safe_read_yaml(file_path=r"config/connection_to_local_neo.yaml")
-        # ssh_tunnel = open_ssh_tunnel(connection_config)
+    # Establish and return a connection to the specified database using a custom method.
+    # This method also utilizes the same configuration file for connection details.
+
+    # connection_config = read_load_file_utilities.safe_read_yaml(file_path=r"config/connection_to_local_neo.yaml")
+    # ssh_tunnel = open_ssh_tunnel(connection_config)
     graph_server = connect_to_custom_db(
-           
-            NAME_DATABASE=database_name,  # The name of the database to connect to.
-            connection_uri=connection_uri,
-            neo_user= neo_username,
-            neo_pass= neo_pass
-        )
-    return (
-            graph_server  # Return the Graph object connected to the specified database.
-        )
+        NAME_DATABASE=database_name,  # The name of the database to connect to.
+        connection_uri=connection_uri,
+        neo_user=neo_username,
+        neo_pass=neo_pass,
+    )
+    return graph_server  # Return the Graph object connected to the specified database.
     # graph_server = connect_to_custom_db(
     #         file_path=r"config/connection_to_local_neo.yaml",  # Configuration file path.
     #         NAME_DATABASE=database_name,  # The name of the database to connect to.
@@ -155,13 +161,17 @@ def wrapper_verify_connection(server: DatabaseManager, database_name: str = "neo
     #     )
 
 
-def wrapper_connection_to_neo4j_database(DATABASE_NAME, ssh_mode = False, neo4j_username = "", neo4j_pass = "", connection_uri = ""):
+def wrapper_connection_to_neo4j_database(
+    DATABASE_NAME, ssh_mode=False, neo4j_username="", neo4j_pass="", connection_uri=""
+):
     # This function establishes a connection to a Neo4j database.
     # It takes the name of the database as input.
 
     # Initialize the DatabaseManager with the configuration file path.
     # This manager handles database operations such as creation and verification.
-    connection_config = read_load_file_utilities.safe_read_yaml(file_path=r"config/connection_to_local_neo.yaml")
+    connection_config = read_load_file_utilities.safe_read_yaml(
+        file_path=r"config/connection_to_local_neo.yaml"
+    )
     if ssh_mode:
         ...
         ssh_tunnel = open_ssh_tunnel(config_connection=connection_config)
@@ -172,7 +182,7 @@ def wrapper_connection_to_neo4j_database(DATABASE_NAME, ssh_mode = False, neo4j_
             neo4j_username = connection_config["neo4j_username_ssh"]
         if not connection_uri:
             connection_uri = f"bolt://localhost:{ssh_tunnel.local_bind_port}"
-        
+
     else:
         if not neo4j_pass:
             neo4j_pass = connection_config["password"]
@@ -181,25 +191,30 @@ def wrapper_connection_to_neo4j_database(DATABASE_NAME, ssh_mode = False, neo4j_
         if not connection_uri:
             connection_uri = connection_config["uri"]
 
-    print('='*50)
+    print("=" * 50)
     print(connection_config)
-    print('-'*50)
-        
-       
+    print("-" * 50)
+
     server = DatabaseManager(
         connection_uri=connection_uri,
         neo4j_pass=neo4j_pass,
-        neo4j_username=neo4j_username
-        )
-    return wrapper_verify_connection(server=server,database_name=DATABASE_NAME,neo_pass=neo4j_pass,connection_uri=connection_uri,neo_username=neo4j_username)
-    
-    
+        neo4j_username=neo4j_username,
+    )
+    return wrapper_verify_connection(
+        server=server,
+        database_name=DATABASE_NAME,
+        neo_pass=neo4j_pass,
+        connection_uri=connection_uri,
+        neo_username=neo4j_username,
+    )
 
 
 async def run_query_async(graph_server, query, package):
     loop = asyncio.get_event_loop()
-   
+
     with ThreadPoolExecutor() as pool:
-        result = await loop.run_in_executor(pool, graph_server.run, query, {"relationships": package})
-      
+        result = await loop.run_in_executor(
+            pool, graph_server.run, query, {"relationships": package}
+        )
+
         return result
