@@ -43,4 +43,4 @@ Here are some screenshots showcasing the web interface and its functionalities:
 ![Query Results](pics/chatbot_2.png)
 
 ### Conclusion
-In this milestone, we have successfully developed a web-based frontend and integrated Neo4j for intelligent data querying. These advancements provide a seamless and intuitive interface for users to interact with the SNET graph, significantly enhancing the accessibility and usability of the data.
+In this milestone, we have successfully developed a web-based frontend and integrated Neo4j for intelligent data querying. These advancements provide a seamless and intuitive interface for users to interact with potential SNET graphs, significantly enhancing the accessibility and usability of the data.
