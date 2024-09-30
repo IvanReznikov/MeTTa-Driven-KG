@@ -1,0 +1,12 @@
+[
+    {
+        "id": 1,
+        "name": "Alice",
+        "request_balance": 30
+    },
+    {
+        "id": 2,
+        "name": "Bob",
+        "request_balance": 0
+    }
+]

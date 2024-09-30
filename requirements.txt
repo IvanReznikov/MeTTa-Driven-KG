@@ -1,0 +1,4 @@
+web3==7.0.0
+eth_account==0.13.2
+python-dotenv==1.0.1
+streamlit==1.32
