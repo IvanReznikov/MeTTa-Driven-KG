@@ -1,0 +1,11 @@
+.env
+.vscode
+.ipynb_checkpoints
+notes
+
+__pycache__
+
+venv
+logs
+db
+notes
